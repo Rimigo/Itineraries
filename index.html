@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ibiza Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 393px;
+            margin: 0 auto;
+            background: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .day-card {
+            margin: 12px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.12);
+            overflow: hidden;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .day-header:active {
+            transform: scale(0.98);
+        }
+
+        .day-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .day-toggle {
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .day-toggle::before {
+            content: 'R';
+            transform: rotate(0deg);
+            transition: transform 0.5s ease;
+        }
+
+        .day-toggle.active::before {
+            transform: rotate(360deg);
+        }
+
+        .day-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .day-content.active {
+            max-height: 2000px;
+        }
+
+        .activity {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .activity:last-child {
+            border-bottom: none;
+        }
+
+        .time-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .activity-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .activity-detail {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .route-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .route-title {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .route-step {
+            font-size: 13px;
+            color: #555;
+            margin: 6px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .route-step::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .restaurants-section {
+            margin-top: 16px;
+        }
+
+        .restaurant-tag {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 500;
+            margin: 4px 4px 4px 0;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .restaurant-tag:active {
+            transform: scale(0.95);
+        }
+
+        .restaurant-tag.veg {
+            background: #764ba2;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: #f57f17;
+        }
+
+        .safety-section {
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4f1f9 100%);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .safety-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 12px;
+        }
+
+        .safety-tip {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .safety-tip::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .emergency-section {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border: 2px solid #f44336;
+            padding: 20px;
+            text-align: center;
+            border-radius: 16px;
+            margin: 20px;
+        }
+
+        .emergency-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-top: 8px;
+        }
+
+        .hotel-section {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 12px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .hotel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #764ba2;
+            margin-bottom: 12px;
+        }
+
+        .hotel-detail {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0;
+        }
+
+        .option-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .option-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .option-divider span {
+            background: white;
+            padding: 0 16px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .safety-tip {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .safety-tip::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .hotel-detail {
+            font-size: 14px;
+            color: #555;
+            margin: 8px 0;
+        }
+
+        .bus-location {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .bus-location:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .location-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .bus-detail {
+            font-size: 13px;
+            color: #666;
+            margin: 4px 0;
+        }
+
+        .floating-nav {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            padding: 10px 16px;
+            box-shadow: 0 6px 24px rgba(102, 126, 234, 0.3);
+            z-index: 100;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 16px;
+            margin: 0 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-button.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Animation for smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive adjustments for iPhone 15 */
+        @media screen and (max-width: 393px) {
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            
+            .day-card {
+                margin: 8px;
+            }
+            
+            .activity {
+                padding: 14px;
+            }
+            
+            .header {
+                padding: 50px 16px 25px;
+            }
+            
+            .info-card {
+                margin: 8px;
+            }
+            
+            .info-body {
+                padding: 14px;
+            }
+            
+            .floating-nav {
+                bottom: 60px;
+                padding: 8px 12px;
+            }
+            
+            .nav-button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏝️ Ibiza Adventure</h1>
+            <p>September 14-16, 2025</p>
+        </div>
+
+        <!-- Day 1 -->
+        <div class="day-card" id="day1">
+            <div class="day-header" onclick="toggleDay('day1')">
+                <div class="day-title">✈️ Day 1 - Barcelona to Ibiza</div>
+                <div class="day-toggle"></div>
+            </div>
+            <div class="day-content">
+                <div class="activity">
+                    <div class="time-badge">5:30 AM</div>
+                    <div class="activity-title">🏨 Check-out & Flight</div>
+                    <div class="activity-detail"><strong>From:</strong> Som Nit Triomf → BCN Airport</div>
+                    <div class="activity-detail"><strong>Flight:</strong> 8:45 AM Barcelona → 9:45 AM Ibiza</div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">11:00 AM</div>
+                    <div class="activity-title">🏨 Hotel Check-in</div>
+                    <div class="activity-detail"><strong>Hotel:</strong> Hotel Royal Plaza</div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">1:30 PM - 4:00 PM</div>
+                    <div class="activity-title">🏰 Dalt Villa & Lunch</div>
+                    <div class="activity-detail"><strong>Transport:</strong> Bus L45a from CETIS Station</div>
+                    <div class="restaurants-section">
+                        <span class="restaurant-tag">S'Escalinata</span>
+                        <span class="restaurant-tag">Al Kilo</span>
+                        <span class="restaurant-tag veg">Kathmandu</span>
+                    </div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">4:30 PM - 8:30 PM</div>
+                    <div class="activity-title">🌅 Sunset Boat Party</div>
+                    <div class="activity-detail"><strong>Meeting:</strong> Carrer de La Punta, 2</div>
+                    <div class="warning-box">⏰ Arrive 45 minutes early</div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">9:00 PM</div>
+                    <div class="activity-title">🍽️ Dinner</div>
+                    <div class="restaurants-section">
+                        <span class="restaurant-tag">La Torreta</span>
+                        <span class="restaurant-tag veg">Simbiosis</span>
+                        <span class="restaurant-tag">Babylon Beach</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div class="day-card" id="day2">
+            <div class="day-header" onclick="toggleDay('day2')">
+                <div class="day-title">🏖️ Day 2 - Beach & Club</div>
+                <div class="day-toggle"></div>
+            </div>
+            <div class="day-content">
+                <div class="activity">
+                    <div class="time-badge">8:00 AM</div>
+                    <div class="activity-title">🥐 Breakfast</div>
+                    <div class="activity-detail"><strong>Location:</strong> Hotel Royal Plaza (included)</div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">11:00 AM - 1:00 PM</div>
+                    <div class="activity-title">🏖️ Beach Time</div>
+                    <div class="activity-detail"><strong>Beach:</strong> Platja de ses Figueretes</div>
+                    <div class="activity-detail"><strong>Transport:</strong> Bus L10/L25A (8-12 min ride)</div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">1:30 PM - 4:00 PM</div>
+                    <div class="activity-title">🍽️ Lunch Options</div>
+                    <div class="restaurants-section">
+                        <strong style="color: #667eea;">Beachside:</strong>
+                        <span class="restaurant-tag">Ohana Ibiza</span>
+                        <span class="restaurant-tag">Cremat Beach</span>
+                    </div>
+                    <div class="option-divider"><span>OR</span></div>
+                    <div class="restaurants-section">
+                        <strong style="color: #667eea;">Dalt Villa:</strong>
+                        <span class="restaurant-tag">S'Escalinata</span>
+                        <span class="restaurant-tag veg">Sa Cova</span>
+                    </div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">6:30 PM</div>
+                    <div class="activity-title">🎉 Ushuaia Club</div>
+                    <div class="activity-detail"><strong>Transport:</strong> Bus L14 to Playa d'en Bossa</div>
+                    <div class="activity-detail"><strong>Duration:</strong> 15-20 min ride</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 3 -->
+        <div class="day-card" id="day3">
+            <div class="day-header" onclick="toggleDay('day3')">
+                <div class="day-title">🚢 Day 3 - Cruise & Cafes</div>
+                <div class="day-toggle"></div>
+            </div>
+            <div class="day-content">
+                <div class="activity">
+                    <div class="time-badge">8:30 AM</div>
+                    <div class="activity-title">🏨 Hotel Change</div>
+                    <div class="activity-detail"><strong>To:</strong> Hotel Apartamentos Central City</div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">10:30 AM - 5:30 PM</div>
+                    <div class="activity-title">🚢 Beach Hopping Cruise</div>
+                    <div class="activity-detail"><strong>Location:</strong> Pg. de la Mar, San Antonio</div>
+                    <div class="activity-detail"><strong>Includes:</strong> Paddleboard, Food & Drinks</div>
+                    <div class="activity-detail"><strong>Duration:</strong> 7 hours</div>
+                </div>
+
+                <div class="activity">
+                    <div class="time-badge">7:00 PM</div>
+                    <div class="activity-title">☕ Cafe Hopping</div>
+                    <div class="restaurants-section">
+                        <span class="restaurant-tag">Cafe Del Mar</span>
+                        <span class="restaurant-tag">Cafe Mambo</span>
+                        <span class="restaurant-tag">Monkey Ibiza</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Safety Section -->
+        <div class="day-card" id="safety">
+            <div class="day-header" onclick="toggleDay('safety')">
+                <div class="day-title">🛡️ Solo Female Traveler Safety</div>
+                <div class="day-toggle"></div>
+            </div>
+            <div class="day-content">
+                <div class="activity">
+                    <div class="safety-tip">Save emergency contacts (112) in phone</div>
+                    <div class="safety-tip">Download offline maps & screenshots</div>
+                    <div class="safety-tip">Keep cash for backup transport</div>
+                    <div class="safety-tip">Inform hotel about evening plans</div>
+                    <div class="safety-tip">Use well-lit stops & populated areas</div>
+                    <div class="safety-tip">Share location with trusted contacts</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Navigation -->
+        <div class="floating-nav">
+            <button class="nav-button active" onclick="scrollToDay(1)">Day 1</button>
+            <button class="nav-button" onclick="scrollToDay(2)">Day 2</button>
+            <button class="nav-button" onclick="scrollToDay(3)">Day 3</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleDay(dayId) {
+            const content = document.querySelector(`#${dayId} .day-content`);
+            const toggle = document.querySelector(`#${dayId} .day-toggle`);
+            
+            content.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+
+        function toggleInfo(infoId) {
+            const content = document.querySelector(`#${infoId} .info-content`);
+            const toggle = document.querySelector(`#${infoId} .info-toggle`);
+            
+            content.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+
+        function scrollToDay(dayNumber) {
+            const day = document.getElementById(`day${dayNumber}`);
+            day.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Auto-expand first day on load (safety section starts collapsed)
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleDay('day1');
+            // Safety section starts collapsed by default
+        });
+
+        // Add touch feedback for mobile
+        document.querySelectorAll('.day-header, .info-header, .nav-button, .restaurant-tag').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
